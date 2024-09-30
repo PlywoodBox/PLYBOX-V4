@@ -317,10 +317,11 @@ body {
   height: 10px;
   background: #ccc;
   border-radius: 5px;
-  cursor: pointer; /* Change cursor to pointer for better UX */
-  touch-action: none; /* Prevent default touch actions */
+  cursor: default; /* Default cursor since only thumb is interactive */
+  pointer-events: none; /* Disable pointer events on the slider track */
 }
 
+/* Enable pointer events on the thumb */
 .custom-slider .thumb {
   position: absolute;
   top: 50%;
@@ -331,8 +332,8 @@ body {
   border: 2px solid #ff0000;
   border-radius: 50%;
   cursor: pointer;
-  z-index: 2;
-  touch-action: none; /* Prevent default touch actions */
+  z-index: 1;
+  pointer-events: auto; /* Enable pointer events on the thumb */
 }
 
 /* Increase touch area for mobile devices */
