@@ -637,6 +637,11 @@ controlPanelToggle.addEventListener('click', () => {
   controlPanelToggle.setAttribute('aria-expanded', isOpen);
 });
 
+
+
+
+
+
 // Initialize Control Panel State
 function initializeControlPanelState() {
   if (window.innerWidth >= 769) {
@@ -699,6 +704,7 @@ const textureSwatches = document.querySelectorAll('.texture-swatch');
 // Function to initialize custom sliders
 function initializeCustomSliders() {
   const sliders = document.querySelectorAll('.custom-slider');
+  
   sliders.forEach(slider => {
     let thumb = slider.querySelector('.thumb');
 
@@ -732,16 +738,19 @@ function initializeCustomSliders() {
     updateThumbPosition();
 
     let isDragging = false;
+    let currentPointerId = null;
 
-    thumb.addEventListener('mousedown', (e) => {
+    // Pointer Down Event
+    thumb.addEventListener('pointerdown', (e) => {
       isDragging = true;
-      document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener('mouseup', onMouseUp);
+      currentPointerId = e.pointerId;
+      slider.setPointerCapture(currentPointerId);
       e.preventDefault();
     });
 
-    function onMouseMove(e) {
-      if (!isDragging) return;
+    // Pointer Move Event
+    slider.addEventListener('pointermove', (e) => {
+      if (!isDragging || e.pointerId !== currentPointerId) return;
 
       const rect = slider.getBoundingClientRect();
       let x = e.clientX - rect.left;
@@ -761,28 +770,49 @@ function initializeCustomSliders() {
       // Trigger the input event on the input element
       const event = new Event('input');
       input.dispatchEvent(event);
-    }
-
-    function onMouseUp(e) {
-      isDragging = false;
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-    }
-
-    // Prevent clicks on the slider track from changing the value
-    slider.addEventListener('click', (e) => {
-      e.stopPropagation();
     });
 
-    // Update the thumb position when the input value changes
-    input.addEventListener('input', () => {
-      value = parseFloat(input.value);
-      value = Math.max(min, Math.min(value, max));
-      slider.setAttribute('data-value', value);
+    // Pointer Up Event
+    slider.addEventListener('pointerup', (e) => {
+      if (e.pointerId === currentPointerId) {
+        isDragging = false;
+        currentPointerId = null;
+        slider.releasePointerCapture(e.pointerId);
+      }
+    });
+
+    // Click on Slider Track to Set Value
+    slider.addEventListener('pointerdown', (e) => {
+      // Ignore if clicking on the thumb
+      if (e.target === thumb) return;
+
+      const rect = slider.getBoundingClientRect();
+      let x = e.clientX - rect.left;
+      x = Math.max(0, Math.min(x, rect.width)); // Clamp x between 0 and slider width
+
+      const percentage = x / rect.width;
+      const newValue = min + percentage * (max - min);
+      value = Math.round(newValue / step) * step; // Adjust for step
+      value = Math.max(min, Math.min(value, max)); // Clamp value between min and max
+
+      // Update the thumb position and fill
       updateThumbPosition();
+
+      // Update the associated input element
+      input.value = value.toFixed(step < 1 ? 1 : 0); // Adjust decimal places
+
+      // Trigger the input event on the input element
+      const event = new Event('input');
+      input.dispatchEvent(event);
+    });
+
+    // Prevent default touch behaviors
+    slider.addEventListener('pointerover', (e) => {
+      e.preventDefault();
     });
   });
 }
+
 
 // Function to debounce resetCamera
 function debounce(func, delay) {
