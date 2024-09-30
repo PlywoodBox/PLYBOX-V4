@@ -317,7 +317,8 @@ body {
   height: 10px;
   background: #ccc;
   border-radius: 5px;
-  cursor: default; /* Default cursor since only thumb is interactive */
+  cursor: pointer; /* Change cursor to pointer for better UX */
+  touch-action: none; /* Prevent default touch actions */
 }
 
 .custom-slider .thumb {
@@ -330,8 +331,19 @@ body {
   border: 2px solid #ff0000;
   border-radius: 50%;
   cursor: pointer;
-  z-index: 1;
+  z-index: 2;
+  touch-action: none; /* Prevent default touch actions */
 }
+
+/* Increase touch area for mobile devices */
+@media (max-width: 768px) {
+  .custom-slider .thumb {
+    width: 32px;
+    height: 32px;
+    border-width: 3px;
+  }
+}
+
 
 /* Scrollbar Styling */
 #control-panel::-webkit-scrollbar {
