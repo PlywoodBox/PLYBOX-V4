@@ -1,0 +1,372 @@
+/* Reset default styles */
+body, h1, h2, h3, p, ul, li, figure, figcaption, input, select, button, label {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  overflow: hidden; /* Prevent scrolling */
+}
+
+#renderer-container {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Control Panel Styles - Common */
+#control-panel {
+  position: fixed;
+  background-color: rgba(255, 255, 255, 0.5); /* 50% transparent */
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+  overflow-y: auto;
+  transition: transform 0.3s ease;
+  z-index: 1000;
+}
+
+/* Mobile View: Control Panel at the Bottom */
+@media (max-width: 768px) {
+  #control-panel {
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-height: 30vh; /* 30% of viewport height */
+    transform: translateY(100%); /* Start hidden at the bottom */
+    padding: 10px; /* Added overall padding */
+  }
+
+  #control-panel:not(.collapsed) {
+    transform: translateY(0); /* Slide up into view when not collapsed */
+  }
+}
+
+/* Desktop View: Control Panel on the Right Side */
+@media (min-width: 769px) {
+  #control-panel {
+    right: 0;
+    top: 0;
+    width: 300px;
+    height: 100%;
+    transform: translateX(0); /* Start visible */
+    padding: 10px; /* Added overall padding */
+    padding-right: 10px;
+  }
+
+  #control-panel.collapsed {
+    transform: translateX(100%); /* Slide out of view when collapsed */
+  }
+}
+
+#control-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #ff0000; /* Changed to red */
+  color: #ffffff; /* Text color white */
+  border-bottom: 1px solid #ddd;
+}
+
+#control-panel-header h2 {
+  font-size: 16px; /* Reduced font size */
+  color: #ffffff; /* Ensure text is white */
+}
+
+/* Hide the Close (X) Button */
+#control-panel-header button {
+  display: none; /* Hides the close button */
+}
+
+#control-panel-content {
+  padding: 10px;
+}
+
+.control-section {
+  margin-bottom: 20px;
+}
+
+.control-section h3 {
+  font-size: 14px; /* Reduced font size */
+  margin-bottom: 10px;
+  cursor: pointer;
+  position: relative;
+  padding-right: 20px;
+  padding-top: 10px; /* Added padding for consistency */
+}
+
+.control-section h3::after {
+  content: '\25BC';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  transition: transform 0.3s ease;
+}
+
+.control-section.collapsed h3::after {
+  transform: translateY(-50%) rotate(-90deg);
+}
+
+.control-content {
+  display: block;
+  padding-top: 10px; /* Added padding for consistency */
+}
+
+.control-section.collapsed .control-content {
+  display: none;
+}
+
+/* Restore Grid Layout for Labels and Controls */
+.control-content label {
+  display: grid;
+  grid-template-columns: 100px 1fr; /* Fixed width for labels, flexible for controls */
+  align-items: center;
+  margin-bottom: 15px;
+  font-size: 14px; /* Reduced font size */
+}
+
+.control-content label > span {
+  /* Ensure the label text is in a span for styling */
+  font-size: 14px; /* Reduced font size */
+}
+
+.control-content label span {
+  margin-right: 10px;
+}
+
+.control-content label span:last-child {
+  margin-right: 0;
+}
+
+.control-content label span.value {
+  margin-left: 10px;
+}
+
+.control-content .control-input {
+  /* Controls take up the remaining space */
+  display: flex;
+  align-items: center;
+}
+
+.control-content label input[type="number"] {
+  width: 50px;
+  margin-left: 10px;
+  border: 2px solid #ff0000; /* Added red border */
+  border-radius: 4px;
+  padding: 2px 5px; /* Optional: Added padding for better appearance */
+  font-size: 14px;
+}
+
+/* Button Styles for Reset Camera and Reset Box */
+#reset-camera,
+#reset-box {
+  padding: 10px;
+  width: 100%;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: #ffffff; /* White fill */
+  color: #000000; /* Black text */
+  border: 2px solid #ff0000; /* Red outline */
+  border-radius: 4px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  margin-bottom: 10px; /* Spacing between buttons */
+}
+
+#reset-camera:hover,
+#reset-box:hover {
+  background-color: #ff0000; /* Red fill on hover */
+  color: #ffffff; /* White text on hover */
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-switch input {
+  display: none;
+}
+
+.toggle-switch .slider {
+  position: relative;
+  width: 50px;
+  height: 24px;
+  margin-left: 10px;
+  background-color: #ccc;
+  border-radius: 34px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.toggle-switch .slider::before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  left: 2px;
+  top: 2px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.toggle-switch input:checked + .slider {
+  background-color: #ff0000;
+}
+
+.toggle-switch input:checked + .slider::before {
+  transform: translateX(26px);
+}
+
+.toggle-switch .slider {
+  flex-shrink: 0; /* Prevent the slider from shrinking */
+}
+
+/* Texture Selection Styles */
+.texture-selection {
+  display: flex;
+  align-items: center;
+  padding-top: 10px; /* Added padding for consistency */
+}
+
+.texture-label {
+  margin-right: 10px;
+  white-space: nowrap;
+}
+
+.texture-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px; /* Reduced gap for better alignment */
+}
+
+@media (min-width: 769px) {
+  .texture-options {
+    flex-wrap: nowrap; /* Prevent wrapping in desktop view */
+  }
+}
+
+.texture-swatch {
+  width: 18px; /* Further reduced size */
+  height: 18px; /* Further reduced size */
+  border: 2px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 2px; /* Narrow margin for visibility */
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.texture-swatch.selected {
+  border-color: #ff0000; /* Red border for selected swatch */
+}
+
+/* Control Panel Toggle Button */
+#control-panel-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #ff0000;
+  color: #fff;
+  border: none;
+  border-radius: 20%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column; /* Ensures vertical stacking of bars */
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+#control-panel-toggle .bar {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background-color: #fff;
+  margin: 2.5px 0;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+/* Animate to X when open */
+#control-panel-toggle.open .bar1 {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+#control-panel-toggle.open .bar2 {
+  opacity: 0;
+}
+
+#control-panel-toggle.open .bar3 {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+#control-panel-toggle:hover {
+  background-color: #cc0000;
+}
+
+/* Custom Slider Styles */
+.custom-slider {
+  position: relative;
+  width: 100%;
+  height: 10px;
+  background: #ccc;
+  border-radius: 5px;
+  cursor: default; /* Default cursor since only thumb is interactive */
+}
+
+.custom-slider .thumb {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  background: #fff;
+  border: 2px solid #ff0000;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 1;
+}
+
+/* Scrollbar Styling */
+#control-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+#control-panel::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.2);
+  border-radius: 4px;
+}
+
+#control-panel::-webkit-scrollbar-track {
+  background-color: rgba(0,0,0,0.05);
+}
+
+#overlay-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  text-align: center;
+  z-index: 1001;
+  opacity: 1;
+  transition: opacity 1s ease-out;
+}
+
+canvas {
+  cursor: grab;
+}
+
+canvas:active {
+  cursor: grabbing;
+}

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>3D Configurator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Link to your CSS file -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- 3D Renderer Container -->
+  <div id="renderer-container"></div>
+
+  <div id="control-panel">
+    <div id="control-panel-header">
+      <h2>Control Panel</h2>
+    </div>
+    <div id="control-panel-content">
+      <!-- Reset Section -->
+      <div class="control-section">
+        <h3>Reset</h3>
+        <div class="control-content">
+          <button id="reset-camera">Reset Camera</button>
+          <button id="reset-box">Reset Box</button>
+        </div>
+      </div>
+      <!-- Box Size Section -->
+      <div class="control-section">
+        <h3>Size (cm)</h3>
+        <div class="control-content">
+          <label>
+            <span>Width</span>
+            <div class="control-input">
+              <div class="custom-slider" data-min="1" data-max="240" data-step="1" data-value="40" id="cube-width-slider"></div>
+              <input type="number" id="cube-width-value" value="40" step="1" min="1" max="240">
+            </div>
+          </label>
+          <label>
+            <span>Height</span>
+            <div class="control-input">
+              <div class="custom-slider" data-min="1" data-max="240" data-step="1" data-value="40" id="cube-height-slider"></div>
+              <input type="number" id="cube-height-value" value="40" step="1" min="1" max="240">
+            </div>
+          </label>
+          <label>
+            <span>Depth</span>
+            <div class="control-input">
+              <div class="custom-slider" data-min="1" data-max="240" data-step="1" data-value="40" id="cube-depth-slider"></div>
+              <input type="number" id="cube-depth-value" value="40" step="1" min="1" max="240">
+            </div>
+          </label>
+          <label>
+            <span>Thickness</span>
+            <div class="control-input">
+              <div class="custom-slider" data-min="1.2" data-max="3.0" data-step="0.1" data-value="1.8" id="cube-thickness-slider"></div>
+              <input type="number" id="cube-thickness-value" value="1.8" step="0.1" min="1.2" max="3.0">
+            </div>
+          </label>
+        </div>
+      </div>
+      <!-- Visibility Section -->
+      <div class="control-section">
+        <h3>Visibility</h3>
+        <div class="control-content">
+          <label class="toggle-switch">
+            Front Panel
+            <input type="checkbox" id="front-panel-visible" checked>
+            <span class="slider"></span>
+          </label>
+          <label class="toggle-switch">
+            Back Panel
+            <input type="checkbox" id="back-panel-visible" checked>
+            <span class="slider"></span>
+          </label>
+          <label class="toggle-switch">
+            Shelves
+            <input type="checkbox" id="shelves-visible" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      <!-- Repetition Section -->
+      <div class="control-section">
+        <h3>Repetition</h3>
+        <div class="control-content">
+          <label>
+            <span>X</span>
+            <div class="control-input">
+              <div class="custom-slider" data-min="1" data-max="10" data-step="1" data-value="1" id="num-cubes-x-slider"></div>
+              <input type="number" id="num-cubes-x-value" value="1" min="1" max="10">
+            </div>
+          </label>
+          <label>
+            <span>Y</span>
+            <div class="control-input">
+              <div class="custom-slider" data-min="1" data-max="10" data-step="1" data-value="1" id="num-cubes-y-slider"></div>
+              <input type="number" id="num-cubes-y-value" value="1" min="1" max="10">
+            </div>
+          </label>
+          <label>
+            <span>Z</span>
+            <div class="control-input">
+              <div class="custom-slider" data-min="1" data-max="2" data-step="1" data-value="1" id="num-cubes-z-slider"></div>
+              <input type="number" id="num-cubes-z-value" value="1" min="1" max="2">
+            </div>
+          </label>
+        </div>
+      </div>
+      <!-- Colour Section -->
+      <div class="control-section">
+        <h3>Colour</h3>
+        <div class="control-content">
+          <div class="texture-selection">
+            <span class="texture-label">Lamination</span>
+            <div class="texture-options">
+              <div class="texture-swatch" data-texture="Grey Lamination" style="background-color: #888888;"></div>
+              <div class="texture-swatch" data-texture="White Lamination" style="background-color: #ffffff;"></div>
+              <div class="texture-swatch" data-texture="Yellow Lamination" style="background-color: #ffd700;"></div>
+              <div class="texture-swatch" data-texture="Natural Finish" style="background-color: #8B4513;"></div>
+              <div class="texture-swatch selected" data-texture="Red Lamination" style="background-color: #ff0000;"></div>
+              <div class="texture-swatch" data-texture="Blue Lamination" style="background-color: #0000ff;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="overlay-message">Play!</div>
+
+  <!-- Control Panel Toggle Button -->
+  <button id="control-panel-toggle" aria-label="Toggle Control Panel" aria-expanded="false">
+    <span class="bar bar1"></span>
+    <span class="bar bar2"></span>
+    <span class="bar bar3"></span>
+  </button>
+
+  <!-- Include your main JavaScript file -->
+  <script type="module" src="main.js"></script>
+</body>
+</html>
