@@ -701,6 +701,7 @@ const numCubesYValueInput = document.getElementById('num-cubes-y-value');
 const numCubesZValueInput = document.getElementById('num-cubes-z-value');
 const textureSwatches = document.querySelectorAll('.texture-swatch');
 
+
 // Function to initialize custom sliders
 function initializeCustomSliders() {
   const sliders = document.querySelectorAll('.custom-slider');
@@ -725,8 +726,7 @@ function initializeCustomSliders() {
     const input = document.getElementById(inputId);
 
     function updateThumbPosition() {
-      const rect = slider.getBoundingClientRect();
-      const sliderWidth = rect.width;
+      const sliderWidth = slider.clientWidth;
       const percentage = (value - min) / (max - min);
       const thumbX = percentage * sliderWidth;
       thumb.style.left = `${thumbX}px`;
@@ -738,28 +738,25 @@ function initializeCustomSliders() {
     updateThumbPosition();
 
     let isDragging = false;
-    let currentPointerId = null;
 
-    // Pointer Down Event
+    // Pointer Event Handlers
     thumb.addEventListener('pointerdown', (e) => {
       isDragging = true;
-      currentPointerId = e.pointerId;
-      slider.setPointerCapture(currentPointerId);
-      e.preventDefault();
+      thumb.setPointerCapture(e.pointerId);
+      e.preventDefault(); // Prevent default to avoid scrolling when dragging
     });
 
-    // Pointer Move Event
-    slider.addEventListener('pointermove', (e) => {
-      if (!isDragging || e.pointerId !== currentPointerId) return;
+    thumb.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
 
-      const rect = slider.getBoundingClientRect();
-      let x = e.clientX - rect.left;
-      x = Math.max(0, Math.min(x, rect.width)); // Clamp x between 0 and slider width
+      const sliderRect = slider.getBoundingClientRect();
+      let x = e.clientX - sliderRect.left;
+      x = Math.max(0, Math.min(x, slider.clientWidth)); // Clamp x between 0 and slider width
 
-      const percentage = x / rect.width;
+      const percentage = x / slider.clientWidth;
       const newValue = min + percentage * (max - min);
-      value = Math.round(newValue / step) * step; // Adjust for step
-      value = Math.max(min, Math.min(value, max)); // Clamp value between min and max
+      const steppedValue = Math.round(newValue / step) * step; // Adjust for step
+      value = Math.max(min, Math.min(steppedValue, max)); // Clamp value between min and max
 
       // Update the thumb position and fill
       updateThumbPosition();
@@ -772,46 +769,24 @@ function initializeCustomSliders() {
       input.dispatchEvent(event);
     });
 
-    // Pointer Up Event
-    slider.addEventListener('pointerup', (e) => {
-      if (e.pointerId === currentPointerId) {
-        isDragging = false;
-        currentPointerId = null;
-        slider.releasePointerCapture(e.pointerId);
-      }
+    thumb.addEventListener('pointerup', (e) => {
+      isDragging = false;
+      thumb.releasePointerCapture(e.pointerId);
     });
 
-    // Click on Slider Track to Set Value
-    slider.addEventListener('pointerdown', (e) => {
-      // Ignore if clicking on the thumb
-      if (e.target === thumb) return;
+    // Ensure the thumb can receive pointer events
+    thumb.style.touchAction = 'none'; // Prevent touch actions like scrolling when interacting with the thumb
 
-      const rect = slider.getBoundingClientRect();
-      let x = e.clientX - rect.left;
-      x = Math.max(0, Math.min(x, rect.width)); // Clamp x between 0 and slider width
-
-      const percentage = x / rect.width;
-      const newValue = min + percentage * (max - min);
-      value = Math.round(newValue / step) * step; // Adjust for step
-      value = Math.max(min, Math.min(value, max)); // Clamp value between min and max
-
-      // Update the thumb position and fill
+    // Update the thumb position when the input value changes
+    input.addEventListener('input', () => {
+      value = parseFloat(input.value);
+      value = Math.max(min, Math.min(value, max));
+      slider.setAttribute('data-value', value);
       updateThumbPosition();
-
-      // Update the associated input element
-      input.value = value.toFixed(step < 1 ? 1 : 0); // Adjust decimal places
-
-      // Trigger the input event on the input element
-      const event = new Event('input');
-      input.dispatchEvent(event);
-    });
-
-    // Prevent default touch behaviors
-    slider.addEventListener('pointerover', (e) => {
-      e.preventDefault();
     });
   });
 }
+
 
 
 // Function to debounce resetCamera
