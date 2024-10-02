@@ -642,20 +642,13 @@ controlPanelToggle.addEventListener('click', () => {
 
 
 
-// Initialize Control Panel State
 function initializeControlPanelState() {
-  if (window.innerWidth >= 769) {
-    // Desktop mode: Start opened
-    controlPanel.classList.remove('collapsed');
-    controlPanelToggle.classList.add('open'); // Show X icon when open
-    controlPanelToggle.setAttribute('aria-expanded', 'true');
-  } else {
-    // Mobile mode: Start closed
-    controlPanel.classList.add('collapsed');
-    controlPanelToggle.classList.remove('open'); // Show burger icon when closed
-    controlPanelToggle.setAttribute('aria-expanded', 'false');
-  }
+  // Always start Control Panel as open
+  controlPanel.classList.remove('collapsed');
+  controlPanelToggle.classList.add('open'); // Show X icon when open
+  controlPanelToggle.setAttribute('aria-expanded', 'true');
 }
+
 
 window.addEventListener('load', () => {
   setTimeout(() => {
