@@ -637,18 +637,19 @@ controlPanelToggle.addEventListener('click', () => {
   controlPanelToggle.setAttribute('aria-expanded', isOpen);
 });
 
-
-
-
-
-
 function initializeControlPanelState() {
-  // Always start Control Panel as open
-  controlPanel.classList.remove('collapsed');
-  controlPanelToggle.classList.add('open'); // Show X icon when open
-  controlPanelToggle.setAttribute('aria-expanded', 'true');
+  if (window.innerWidth >= 769) {
+    // Desktop mode: Start opened
+    controlPanel.classList.remove('collapsed');
+    controlPanelToggle.classList.add('open'); // Show X icon when open
+    controlPanelToggle.setAttribute('aria-expanded', 'true');
+  } else {
+    // Mobile mode: Start opened (previously closed)
+    controlPanel.classList.remove('collapsed'); // Ensure it's open
+    controlPanelToggle.classList.add('open'); // Show X icon when open
+    controlPanelToggle.setAttribute('aria-expanded', 'true');
+  }
 }
-
 
 window.addEventListener('load', () => {
   setTimeout(() => {
